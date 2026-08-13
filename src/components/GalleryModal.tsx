@@ -163,6 +163,13 @@ export const GalleryModal: React.FC<GalleryModalProps> = ({
             <img
               key={currentItem.id}
               src={currentItem.src}
+              onError={(e) => {
+                const target = e.currentTarget;
+                const fallback = `/images/analisa_${currentItem.id}.jpg`;
+                if (!target.src.includes(fallback)) {
+                  target.src = fallback;
+                }
+              }}
               alt={currentItem.title}
               className="max-w-full max-h-full object-contain rounded-lg shadow-2xl transition-all duration-300 transform scale-100"
             />
@@ -204,6 +211,13 @@ export const GalleryModal: React.FC<GalleryModalProps> = ({
                 >
                   <img
                     src={item.src}
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      const fallback = `/images/analisa_${item.id}.jpg`;
+                      if (!target.src.includes(fallback)) {
+                        target.src = fallback;
+                      }
+                    }}
                     alt={item.title}
                     className="w-full h-full object-cover"
                   />

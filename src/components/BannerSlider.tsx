@@ -150,6 +150,15 @@ export const BannerSlider: React.FC<BannerSliderProps> = () => {
               <img
                 key={slides[currentIndex].id}
                 src={slides[currentIndex].image}
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  const fallback = slides[currentIndex].id === 1 || slides[currentIndex].id === 4
+                    ? '/images/banner_valbury_2.png'
+                    : '/images/banner_valbury.png';
+                  if (!target.src.includes(fallback)) {
+                    target.src = fallback;
+                  }
+                }}
                 alt={slides[currentIndex].title}
                 className="w-full h-full object-cover object-center transition-all duration-700 scale-105 group-hover:scale-100"
               />

@@ -136,6 +136,12 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation }) => {
               <div className="relative border border-white/10 bg-[#1a1c23] overflow-hidden group shadow-2xl">
                 <img
                   src={rizkiPortrait}
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    if (!target.src.includes('/images/rizki_profile_photo.jpg')) {
+                      target.src = '/images/rizki_profile_photo.jpg';
+                    }
+                  }}
                   alt="Rizki Apriansyah - Sales Educator Trading PT Valbury"
                   className="w-full h-auto object-cover object-center max-h-[560px] group-hover:scale-105 transition-transform duration-700"
                   referrerPolicy="no-referrer"
