@@ -3,7 +3,7 @@ import { Shield, ArrowRight, Award, MessageCircle, BarChart3, CheckCircle2 } fro
 import { CandlestickBg } from './CandlestickBg';
 import { TikTokModal } from './TikTokModal';
 
-const rizkiPortrait = '/images/rizki_profile_photo.jpg';
+import rizkiPortrait from '../assets/images/rizki_profile_photo.jpg';
 
 interface HeroProps {
   onOpenConsultation: () => void;
