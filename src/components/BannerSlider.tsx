@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { ChevronLeft, ChevronRight, Send, Award, TrendingUp, Sparkles, ShieldCheck } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { ChevronLeft, ChevronRight, Send, Award, Sparkles, ShieldCheck } from 'lucide-react';
 import bannerValbury from '../assets/images/banner_valbury.png';
 import bannerValbury2 from '../assets/images/banner_valbury_2.png';
 
@@ -16,52 +16,61 @@ interface BannerSlide {
   ctaText: string;
 }
 
-export const BannerSlider: React.FC<BannerSliderProps> = ({ onOpenConsultation }) => {
-  const slides: BannerSlide[] = [
-    {
-      id: 1,
-      image: bannerValbury2,
-      badge: 'PT Valbury Futures Indonesia',
-      title: 'Solusi Edukasi & Bimbingan Trading Terpercaya',
-      subtitle: 'Dapatkan pendampingan profesional, analisa teknikal harian, serta fasilitas edukasi terlengkap bersama Sales Educator PT Valbury.',
-      ctaText: 'Jadwalkan Konsultasi',
-    },
-    {
-      id: 2,
-      image: bannerValbury,
-      badge: 'Program Edukasi Valbury',
-      title: 'Akses Platform Perdagangan Berjangka Berlisensi',
-      subtitle: 'Tingkatkan pemahaman analisa teknikal, fundamental, serta pengelolaan risiko untuk trading yang konsisten.',
-      ctaText: 'Konsultasi Sekarang',
-    },
-    {
-      id: 3,
-      image: bannerValbury,
-      badge: 'Manajemen Risiko Trading',
-      title: 'Strategi Terstruktur & Pengelolaan Modal Aman',
-      subtitle: 'Pelajari penyusunan Money Management yang rasional untuk menjaga ketahanan dana dalam setiap transaksi.',
-      ctaText: 'Konsultasi Strategi',
-    },
-    {
-      id: 4,
-      image: bannerValbury2,
-      badge: 'Analisa Pasar Harian',
-      title: 'Riset Market Komprehensif & Berita Ekonomi',
-      subtitle: 'Dapatkan wawasan perkembangan pasar forex & komoditas terkini untuk dasar keputusan trading yang obyektif.',
-      ctaText: 'Hubungi Rizki',
-    },
-  ];
+const slides: BannerSlide[] = [
+  {
+    id: 1,
+    image: bannerValbury2,
+    badge: 'PT Valbury Futures Indonesia',
+    title: 'Solusi Edukasi & Bimbingan Trading Terpercaya',
+    subtitle: 'Dapatkan pendampingan profesional, analisa teknikal harian, serta fasilitas edukasi terlengkap bersama Sales Educator PT Valbury.',
+    ctaText: 'Jadwalkan Konsultasi',
+  },
+  {
+    id: 2,
+    image: bannerValbury,
+    badge: 'Program Edukasi Valbury',
+    title: 'Akses Platform Perdagangan Berjangka Berlisensi',
+    subtitle: 'Tingkatkan pemahaman analisa teknikal, fundamental, serta pengelolaan risiko untuk trading yang konsisten.',
+    ctaText: 'Konsultasi Sekarang',
+  },
+  {
+    id: 3,
+    image: bannerValbury,
+    badge: 'Manajemen Risiko Trading',
+    title: 'Strategi Terstruktur & Pengelolaan Modal Aman',
+    subtitle: 'Pelajari penyusunan Money Management yang rasional untuk menjaga ketahanan dana dalam setiap transaksi.',
+    ctaText: 'Konsultasi Strategi',
+  },
+  {
+    id: 4,
+    image: bannerValbury2,
+    badge: 'Analisa Pasar Harian',
+    title: 'Riset Market Komprehensif & Berita Ekonomi',
+    subtitle: 'Dapatkan wawasan perkembangan pasar forex & komoditas terkini untuk dasar keputusan trading yang obyektif.',
+    ctaText: 'Hubungi Rizki',
+  },
+];
 
+export const BannerSlider: React.FC<BannerSliderProps> = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const touchStartX = useRef<number | null>(null);
+
+  // Preload images on mount so slides switch instantly without lag or blank states
+  useEffect(() => {
+    slides.forEach((slide) => {
+      const img = new Image();
+      img.src = slide.image;
+    });
+  }, []);
 
   const nextSlide = useCallback(() => {
     setCurrentIndex((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-  }, [slides.length]);
+  }, []);
 
   const prevSlide = useCallback(() => {
     setCurrentIndex((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
-  }, [slides.length]);
+  }, []);
 
   useEffect(() => {
     if (!isAutoPlaying) return;
@@ -70,6 +79,23 @@ export const BannerSlider: React.FC<BannerSliderProps> = ({ onOpenConsultation }
     }, 5000);
     return () => clearInterval(interval);
   }, [isAutoPlaying, nextSlide]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const diffX = touchStartX.current - touchEndX;
+
+    if (diffX > 50) {
+      nextSlide();
+    } else if (diffX < -50) {
+      prevSlide();
+    }
+    touchStartX.current = null;
+  };
 
   return (
     <section className="py-12 bg-[#0a0a0c] relative overflow-hidden border-y border-white/10">
@@ -89,7 +115,7 @@ export const BannerSlider: React.FC<BannerSliderProps> = ({ onOpenConsultation }
           <div className="flex items-center gap-2">
             <button
               onClick={prevSlide}
-              className="p-2 bg-white/5 border border-white/10 text-white hover:border-[#38bdf8] hover:text-[#38bdf8] transition-all"
+              className="p-2 bg-white/5 border border-white/10 text-white hover:border-[#38bdf8] hover:text-[#38bdf8] transition-all cursor-pointer"
               aria-label="Previous Slide"
             >
               <ChevronLeft className="w-4 h-4" />
@@ -99,7 +125,7 @@ export const BannerSlider: React.FC<BannerSliderProps> = ({ onOpenConsultation }
             </span>
             <button
               onClick={nextSlide}
-              className="p-2 bg-white/5 border border-white/10 text-white hover:border-[#38bdf8] hover:text-[#38bdf8] transition-all"
+              className="p-2 bg-white/5 border border-white/10 text-white hover:border-[#38bdf8] hover:text-[#38bdf8] transition-all cursor-pointer"
               aria-label="Next Slide"
             >
               <ChevronRight className="w-4 h-4" />
@@ -109,9 +135,11 @@ export const BannerSlider: React.FC<BannerSliderProps> = ({ onOpenConsultation }
 
         {/* Carousel Container */}
         <div
-          className="relative glass-card border border-[#38bdf8]/30 overflow-hidden shadow-2xl group"
+          className="relative glass-card border border-[#38bdf8]/30 overflow-hidden shadow-2xl group select-none"
           onMouseEnter={() => setIsAutoPlaying(false)}
           onMouseLeave={() => setIsAutoPlaying(true)}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
         >
           {/* Main Slide Aspect Box */}
           <div className="relative w-full min-h-[360px] sm:min-h-[440px] md:min-h-[480px] flex items-center">
@@ -119,6 +147,7 @@ export const BannerSlider: React.FC<BannerSliderProps> = ({ onOpenConsultation }
             {/* Background Image with Gradient Overlay */}
             <div className="absolute inset-0 z-0 overflow-hidden">
               <img
+                key={slides[currentIndex].id}
                 src={slides[currentIndex].image}
                 alt={slides[currentIndex].title}
                 className="w-full h-full object-cover object-center transition-all duration-700 scale-105 group-hover:scale-100"
@@ -163,7 +192,7 @@ export const BannerSlider: React.FC<BannerSliderProps> = ({ onOpenConsultation }
             {/* Navigation Overlay Arrows */}
             <button
               onClick={prevSlide}
-              className="absolute left-3 top-1/2 -translate-y-1/2 z-30 p-3 bg-black/60 border border-white/20 text-white hover:border-[#38bdf8] hover:text-[#38bdf8] backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute left-3 top-1/2 -translate-y-1/2 z-30 p-3 bg-black/60 border border-white/20 text-white hover:border-[#38bdf8] hover:text-[#38bdf8] backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
               aria-label="Previous"
             >
               <ChevronLeft className="w-5 h-5" />
@@ -171,7 +200,7 @@ export const BannerSlider: React.FC<BannerSliderProps> = ({ onOpenConsultation }
 
             <button
               onClick={nextSlide}
-              className="absolute right-3 top-1/2 -translate-y-1/2 z-30 p-3 bg-black/60 border border-white/20 text-white hover:border-[#38bdf8] hover:text-[#38bdf8] backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute right-3 top-1/2 -translate-y-1/2 z-30 p-3 bg-black/60 border border-white/20 text-white hover:border-[#38bdf8] hover:text-[#38bdf8] backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
               aria-label="Next"
             >
               <ChevronRight className="w-5 h-5" />
@@ -185,7 +214,7 @@ export const BannerSlider: React.FC<BannerSliderProps> = ({ onOpenConsultation }
               <button
                 key={slide.id}
                 onClick={() => setCurrentIndex(idx)}
-                className={`h-1.5 transition-all duration-300 ${
+                className={`h-1.5 transition-all duration-300 cursor-pointer ${
                   currentIndex === idx
                     ? 'w-8 sky-bg'
                     : 'w-2 bg-white/30 hover:bg-white/60'
@@ -201,3 +230,4 @@ export const BannerSlider: React.FC<BannerSliderProps> = ({ onOpenConsultation }
     </section>
   );
 };
+

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { X, ChevronLeft, ChevronRight, Image as ImageIcon, Sparkles } from 'lucide-react';
 import analisa1 from '../assets/images/analisa_1.jpg';
 import analisa2 from '../assets/images/analisa_2.jpg';
@@ -51,10 +51,16 @@ export const GalleryModal: React.FC<GalleryModalProps> = ({
   initialIndex = 0,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const touchStartX = useRef<number | null>(null);
 
   useEffect(() => {
     if (isOpen) {
       setCurrentIndex(initialIndex);
+      // Preload all gallery images so switching is instant and smooth
+      galleryData.forEach((item) => {
+        const img = new Image();
+        img.src = item.src;
+      });
     }
   }, [isOpen, initialIndex]);
 
@@ -78,6 +84,23 @@ export const GalleryModal: React.FC<GalleryModalProps> = ({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose, handleNext, handlePrev]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const diffX = touchStartX.current - touchEndX;
+
+    if (diffX > 50) {
+      handleNext();
+    } else if (diffX < -50) {
+      handlePrev();
+    }
+    touchStartX.current = null;
+  };
 
   if (!isOpen) return null;
 
@@ -120,7 +143,11 @@ export const GalleryModal: React.FC<GalleryModalProps> = ({
         </div>
 
         {/* Main Image Stage */}
-        <div className="relative flex-1 bg-black/60 flex items-center justify-center p-2 sm:p-6 overflow-hidden select-none">
+        <div
+          className="relative flex-1 bg-black/60 flex items-center justify-center p-2 sm:p-6 overflow-hidden select-none"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
           {/* Previous Button */}
           <button
             onClick={handlePrev}
@@ -192,3 +219,4 @@ export const GalleryModal: React.FC<GalleryModalProps> = ({
     </div>
   );
 };
+
