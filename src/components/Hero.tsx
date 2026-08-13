@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Shield, ArrowRight, Award, MessageCircle, BarChart3, CheckCircle2 } from 'lucide-react';
 import { CandlestickBg } from './CandlestickBg';
 import { TikTokModal } from './TikTokModal';
-import rizkiPortrait from '../assets/images/rizki_profile_photo.jpg';
+
+const rizkiPortrait = '/images/rizki_profile_photo.jpg';
 
 interface HeroProps {
   onOpenConsultation: () => void;

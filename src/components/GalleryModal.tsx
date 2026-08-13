@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { X, ChevronLeft, ChevronRight, Image as ImageIcon, Sparkles } from 'lucide-react';
-import analisa1 from '../assets/images/analisa_1.jpg';
-import analisa2 from '../assets/images/analisa_2.jpg';
-import analisa3 from '../assets/images/analisa_3.jpg';
-import analisa4 from '../assets/images/analisa_4.jpg';
+
+const analisa1 = '/images/analisa_1.jpg';
+const analisa2 = '/images/analisa_2.jpg';
+const analisa3 = '/images/analisa_3.jpg';
+const analisa4 = '/images/analisa_4.jpg';
 
 export interface GalleryItem {
   id: number;
