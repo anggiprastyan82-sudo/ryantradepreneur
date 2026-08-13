@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Shield, ArrowRight, Award, MessageCircle, BarChart3, CheckCircle2 } from 'lucide-react';
+import { Shield, ArrowRight, Award, MessageCircle, BarChart3 } from 'lucide-react';
 import { CandlestickBg } from './CandlestickBg';
 import { TikTokModal } from './TikTokModal';
 
-import rizkiPortrait from '../assets/images/rizki_profile_photo.jpg';
+const rizkiPortrait = '/images/rizki_profile_photo.jpg';
 
 interface HeroProps {
   onOpenConsultation: () => void;
@@ -135,13 +135,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation }) => {
               {/* Main Photo Frame */}
               <div className="relative border border-white/10 bg-[#1a1c23] overflow-hidden group shadow-2xl">
                 <img
-                  src={rizkiPortrait}
-                  onError={(e) => {
-                    const target = e.currentTarget;
-                    if (!target.src.includes('/images/rizki_profile_photo.jpg')) {
-                      target.src = '/images/rizki_profile_photo.jpg';
-                    }
-                  }}
+                  src="/images/rizki_profile_photo.jpg"
                   alt="Rizki Apriansyah - Sales Educator Trading PT Valbury"
                   className="w-full h-auto object-cover object-center max-h-[560px] group-hover:scale-105 transition-transform duration-700"
                   referrerPolicy="no-referrer"

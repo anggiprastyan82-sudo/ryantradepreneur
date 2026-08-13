@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { X, ChevronLeft, ChevronRight, Image as ImageIcon, Sparkles } from 'lucide-react';
 
-import analisa1 from '../assets/images/analisa_1.jpg';
-import analisa2 from '../assets/images/analisa_2.jpg';
-import analisa3 from '../assets/images/analisa_3.jpg';
-import analisa4 from '../assets/images/analisa_4.jpg';
+const technicalImages = [
+  "/images/analisa_1.jpg",
+  "/images/analisa_2.jpg",
+  "/images/analisa_3.jpg",
+  "/images/analisa_4.jpg"
+];
 
 export interface GalleryItem {
   id: number;
@@ -16,25 +18,25 @@ export interface GalleryItem {
 export const galleryData: GalleryItem[] = [
   {
     id: 1,
-    src: analisa1,
+    src: technicalImages[0],
     title: 'Trading Opportunity — XAU/USD | Analisa Teknikal',
     category: 'Analisa Teknikal',
   },
   {
     id: 2,
-    src: analisa2,
+    src: technicalImages[1],
     title: 'Trading Results — XAU/USD Performance',
     category: 'Hasil Trading',
   },
   {
     id: 3,
-    src: analisa3,
+    src: technicalImages[2],
     title: 'Trading Opportunity — XAU/USD | Entry, TP & SL',
     category: 'Sinyal & Eksekusi',
   },
   {
     id: 4,
-    src: analisa4,
+    src: technicalImages[3],
     title: 'Trading Results — XAU/USD Performance',
     category: 'Hasil Trading',
   },
@@ -163,13 +165,6 @@ export const GalleryModal: React.FC<GalleryModalProps> = ({
             <img
               key={currentItem.id}
               src={currentItem.src}
-              onError={(e) => {
-                const target = e.currentTarget;
-                const fallback = `/images/analisa_${currentItem.id}.jpg`;
-                if (!target.src.includes(fallback)) {
-                  target.src = fallback;
-                }
-              }}
               alt={currentItem.title}
               className="max-w-full max-h-full object-contain rounded-lg shadow-2xl transition-all duration-300 transform scale-100"
             />
@@ -211,13 +206,6 @@ export const GalleryModal: React.FC<GalleryModalProps> = ({
                 >
                   <img
                     src={item.src}
-                    onError={(e) => {
-                      const target = e.currentTarget;
-                      const fallback = `/images/analisa_${item.id}.jpg`;
-                      if (!target.src.includes(fallback)) {
-                        target.src = fallback;
-                      }
-                    }}
                     alt={item.title}
                     className="w-full h-full object-cover"
                   />
